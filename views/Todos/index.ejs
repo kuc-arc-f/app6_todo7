@@ -1,0 +1,73 @@
+<div>
+    <h1>todos - index</h1>
+    <hr />
+    <a class="btn btn-primary" href="/todos/new"> add</a>
+    <hr />
+    <div v-if="complete==0">
+        <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <a class="nav-link">未完</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" v-on:click="set_complete(1)">完了済</a>
+        </li>
+        </ul>
+    </div>
+    <div id="app"></div>
+</div>
+
+<!-- -->
+<script type="text/babel">
+
+//
+class List extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {data: ''}
+    }
+    componentDidMount(){
+        axios.get('/api_todos/index').then(response => {
+            this.setState({ data: response.data.docs })
+            console.log( response.data.docs )
+        })
+        .catch(function (error) {
+            console.log(error)
+        })
+    }
+    tabRow(){
+        if(this.state.data instanceof Array){
+            return this.state.data.map(function(row, index){
+                return (
+                    <tr key={index}>
+                        <td>
+                            <h4><a href={"/todos/show/"+row._id}>{row.title}</a>
+                            </h4>
+                        </td>
+                        <td><a href={"/todos/edit/"+row._id}>[ edit ]</a></td>                        
+                    </tr>            
+                )
+            })
+        }
+    }
+    render(){
+        return (
+            <div>
+                <table className="table table-hover">
+                    <thead>
+                    <tr>
+                        <td>Title</td>
+                        <td>content</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {this.tabRow()}
+                    </tbody>
+                </table>            
+            </div>
+        )
+    }
+  
+}
+
+ReactDOM.render(<List />, document.getElementById('app'));
+</script>

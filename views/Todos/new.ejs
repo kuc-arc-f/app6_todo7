@@ -1,0 +1,66 @@
+<h1>Todos -new</h1>
+<hr />
+<div id="app"></div>
+
+<!-- -->
+<script type="text/babel">
+
+class Create extends React.Component {
+    constructor(props){
+        super(props)
+        this.state = {
+            title: '', 
+            content: ''
+        }
+    }
+    handleChange = event => {
+        const { name, value } = event.target
+        this.setState({
+            [name]: value
+        })
+    }
+    add_task(){
+//        console.log(this.state)
+        const task = {
+            title: this.state.title,
+            content: this.state.content,
+            'complete' : 0
+        }
+        let uri = '/api_todos/new'
+        axios.post(uri, task ).then((response) => {
+            window.location.href="/todos"
+            console.log("success")
+        })        
+    }
+    render() {
+//        console.log(this.state)
+        const { title, content } = this.state;
+        return (
+        <div>
+            <div className="row">
+            <div className="col-md-6">
+                <div className="form-group">
+                <label>Title:</label>
+                <input type="text" className="form-control" name="title"
+                onChange={this.handleChange}/>
+                </div>
+            </div>
+            </div>
+            <div className="row">
+                <div className="col-md-6">
+                <div className="form-group">
+                    <label>content:</label>
+                    <textarea className="form-control" id="content" rows="10"
+                     name="content"onChange={this.handleChange}>
+                    </textarea>
+                </div>
+                </div>
+            </div><br />
+            <hr />
+            <a className="btn btn-primary" href='#' onClick={this.add_task.bind(this )}>Add</a>
+        </div>
+        )
+    }
+}
+ReactDOM.render(<Create />, document.getElementById('app'));
+</script>

@@ -1,0 +1,33 @@
+<h1>Todos - test</h1>
+<hr />
+<div id="app"></div>
+
+
+<!-- -->
+<script type="text/babel">
+class Show extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {data: ''}
+//        this.content = "aaa/bbb"
+        this.content = "# aaa111 \n * a1\n***"
+//        this.id = props.id
+//        console.log(this.id)
+    }
+    convert_md(){
+        console.log("#conver_md")
+        return (marked(this.content.toString() ) )
+
+    }
+    render(){
+    return (
+        <div>
+            <h1>title : aaa</h1>
+            <hr />
+            <div dangerouslySetInnerHTML={{__html: this.convert_md() }} ></div>
+        </div>
+    )
+    }
+}
+ReactDOM.render(<Show id="1"  />, document.getElementById('app'));
+</script>
