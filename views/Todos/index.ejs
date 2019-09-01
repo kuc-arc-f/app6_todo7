@@ -3,16 +3,6 @@
     <hr />
     <a class="btn btn-primary" href="/todos/new"> add</a>
     <hr />
-    <div v-if="complete==0">
-        <ul class="nav nav-tabs">
-        <li class="nav-item">
-            <a class="nav-link">未完</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" v-on:click="set_complete(1)">完了済</a>
-        </li>
-        </ul>
-    </div>
     <div id="app"></div>
 </div>
 
@@ -24,15 +14,33 @@ class List extends React.Component {
     constructor(props) {
         super(props);
         this.state = {data: ''}
+        this.complete = props.complete
+ //       console.log( this.complete )
     }
-    componentDidMount(){
+    getList(complete){
+        this.complete = complete
         axios.get('/api_todos/index').then(response => {
-            this.setState({ data: response.data.docs })
-            console.log( response.data.docs )
+            var todos = []
+//            console.log( response.data.docs )
+            var items = response.data.docs
+            self = this
+            items.forEach( function (item) {
+                if(item.complete == complete ){
+                        //var dt = item.up_date
+                        //var s = new String(dt)                        
+                        //item.date_str = s.substring(0, 10)
+                    todos.push(item)
+                }                    
+            });
+//            console.log( todos )
+            this.setState({ data: todos }) 
         })
         .catch(function (error) {
             console.log(error)
         })
+    }
+    componentDidMount(){
+        this.getList(0)
     }
     tabRow(){
         if(this.state.data instanceof Array){
@@ -49,9 +57,34 @@ class List extends React.Component {
             })
         }
     }
+    tabHead(){
+        var completeMsg= "display= Not  complete"
+        if(this.complete == 1){
+            completeMsg= "display= complete"
+            console.log("0-desu" )
+        }
+        return(
+            <div>
+                <p className="completeState">{completeMsg}</p>
+                <ul className="nav nav-tabs">
+                    <li className="nav-item">
+                        <a className="nav-link" 
+                        onClick={this.getList.bind(this, 0)}>未完
+                        </a>
+                    </li>
+                    <li className="nav-item">
+                        <a className="nav-link"
+                         onClick={this.getList.bind(this, 1)}>完了済
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        )
+   }
     render(){
         return (
             <div>
+                {this.tabHead()}
                 <table className="table table-hover">
                     <thead>
                     <tr>
@@ -69,5 +102,11 @@ class List extends React.Component {
   
 }
 
-ReactDOM.render(<List />, document.getElementById('app'));
+ReactDOM.render(<List complete="0" />, document.getElementById('app'));
 </script>
+<!-- -->
+<style>
+.completeState{
+    color : green;
+}
+</style>

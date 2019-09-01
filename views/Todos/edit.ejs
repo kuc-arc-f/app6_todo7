@@ -34,12 +34,21 @@ class Edit extends React.Component {
             console.log(error)
         })
     }
-    update_proc(){
+    set_complete(value){
+    //    console.log("#test1")
+        console.log(value)
+        this.setState({ complete: value })
+        console.log(this.state.complete)
+        this.update_proc(value)
+//        var d = document.getElementById("content").getAttribute("value");
+//        console.log(d)
+    }
+    update_proc(complete){
         const task = {
             id: this.id,
             title: this.state.title,
             content: this.state.content,
-            complete : this.state.complete,
+            complete : complete,
         }
         console.log(task )
         let uri = '/api_todos/update/'
@@ -54,6 +63,21 @@ class Edit extends React.Component {
             console.log( res.data )
             window.location.href="/todos"
         })        
+    }
+    dispComplete(){
+//        var ret =""
+        if(this.state.complete == 0){
+            return(
+            <div>
+                <a href='#' onClick={this.set_complete.bind(this, 1)}>[ complete ]</a>
+                <br />
+                <br />
+            </div>
+            )
+        }else{
+            return ("")
+        }
+
     }
     render(){
 //        console.log( this.state )
@@ -74,7 +98,8 @@ class Edit extends React.Component {
                 <div className="col-md-6">
                     <div className="form-group">
                         <label>content:</label>
-                        <textarea class="form-control" id="content" rows="10" name="content"
+                        <textarea className="form-control" id="content" rows="10"
+                        name="content"
                         value={this.state.content}
                         onChange={this.handleChange}
                         >
@@ -85,8 +110,9 @@ class Edit extends React.Component {
             </div><br />
             <hr />
             <a className="btn btn-primary" href='#'
-             onClick={this.update_proc.bind(this )}>Save</a>            
-            <hr />
+             onClick={this.update_proc.bind(this, this.state.complete )}>Save</a>            
+             <hr />
+             {this.dispComplete()}
             <a className="btn btn-primary" href='#'
              onClick={this.delete_proc.bind(this )}>Delete</a>
         </div>
